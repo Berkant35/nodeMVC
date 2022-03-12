@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <%-include('./inc/head')%>
+</head>
+
+<body>
+    <%-include('./inc/nav')%>
+        <section>
+            <a href="/admin/add">Yeni yazı ekle</a>
+            <h1>
+                Yazılar
+            </h1>
+            <ul>
+                <% blogs.forEach(element => { %>
+                    <li>
+                        <p>
+                            <%=element.title%>
+                        </p>
+                        <!-- data-doc tagin içine data koymamızı olanak sağlayan bir yöntem-->
+                        <a class="del" href="" data-doc="<%=element._id%>">Sil</a>
+                    </li>
+                    <% }) %>
+            </ul>
+        </section>
+        <script>
+            // a taginin için deki del clasını bul querySelector ile 
+            const del = document.querySelector('a.del')
+
+            // buna bir listener ekle ve click olsun 
+            del.addEventListener('click', (e) => {
+                //Burda tagin içine koyduğumuz data-doctakini al diyoruz. 
+                const endPoint = `/admin/delete/${del.dataset.doc}`
+                fetch(endPoint, {
+                        method: 'DELETE'
+                    }).then((response) => {
+                        response.json()
+                    }).then((data) => window.location.href = data.link)
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            })
+        </script>
+</body>
+
+</html>
