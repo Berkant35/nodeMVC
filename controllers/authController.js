@@ -1,12 +1,18 @@
 const User = require('../models/users')
 const jwt = require('jsonwebtoken')
+var alert = require('alert');
 const maxAge = 60 * 60 * 24
 const createToken = (id) => {
     return jwt.sign({ id }, 'gizli kelime', { expiresIn: maxAge })
 }
 
-const loginGet = (req, res) => { res.render('login', { title: 'Giriş' }) }
-
+const loginGet = (req, res) => {
+    try {
+        res.render('login', { title: 'Giriş' })
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 const loginPost = async(req, res) => {
     const { username, password } = req.body
@@ -17,7 +23,7 @@ const loginPost = async(req, res) => {
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
         res.redirect('/admin')
     } catch (err) {
-        console.log(err);
+        alert(err.message)
     }
 }
 
@@ -27,10 +33,7 @@ const signupGet = (req, res) => {
 
 const signupPost = (req, res) => {
 
-
     const user = new User(req.body)
-
-
 
     user.save().then((result) => {
         res.redirect('/login')
